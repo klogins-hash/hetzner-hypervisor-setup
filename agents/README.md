@@ -352,6 +352,25 @@ docker-compose run --rm orchestrator python orchestrator.py --dry-run
 
 See **[DOCKER.md](DOCKER.md)** for complete Docker deployment guide.
 
+### 🚀 Firecracker Deployment
+**Recommended for:** Local testing, Hypervisor testing, Lightweight isolation
+
+**Benefits:**
+- Minimal overhead (5-10MB per VM vs 50-100MB Docker)
+- Full VM isolation
+- Boot in 100-500ms
+- Perfect for testing Flintlock/hypervisor workflows
+- Aligned with project's microVM focus
+
+**Quick Start:**
+```bash
+./firecracker/setup-tap.sh
+./firecracker/launch-agent-vm.sh
+ssh -i firecracker/ssh/id_rsa ubuntu@172.15.0.2
+```
+
+See **[FIRECRACKER.md](FIRECRACKER.md)** for complete Firecracker deployment guide.
+
 ### 🐍 Native Python
 **Recommended for:** Local development, Quick testing, Custom integration
 
