@@ -1,0 +1,72 @@
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Python
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+*.egg
+*.egg-info
+dist
+build
+.venv
+venv/
+env/
+ENV/
+
+# Environment
+.env
+.env.local
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Logs (don't include in image, mount as volume)
+logs/
+*.log
+
+# State (don't include in image, mount as volume)
+state/
+checkpoints/
+*.json.bak
+
+# Cache
+cache/
+.cache/
+*.cache
+
+# Testing
+.pytest_cache
+.coverage
+htmlcov/
+.tox/
+
+# Documentation (include README and ARCHITECTURE)
+# But exclude build artifacts
+docs/_build/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.temp
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini

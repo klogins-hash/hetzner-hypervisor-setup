@@ -1,0 +1,69 @@
+version: '3.8'
+
+services:
+  orchestrator:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: hetzner-hypervisor-agents:latest
+    container_name: hypervisor-orchestrator
+
+    # Environment variables from .env file
+    env_file:
+      - .env
+
+    # Volume mounts for persistence and SSH keys
+    volumes:
+      # State and logs persistence
+      - ./state:/app/state
+      - ./logs:/app/logs
+      - ./checkpoints:/app/checkpoints
+      - ./cache:/app/cache
+
+      # SSH configuration (for connecting to Hetzner server)
+      - ${HOME}/.ssh:/root/.ssh:ro
+
+      # Config override (optional)
+      - ./config.yaml:/app/config.yaml:ro
+
+    # Network mode - use host network for SSH access
+    network_mode: host
+
+    # Restart policy
+    restart: unless-stopped
+
+    # Resource limits (adjust based on your needs)
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 4G
+        reservations:
+          cpus: '1'
+          memory: 2G
+
+    # Default command - can be overridden
+    # Examples:
+    #   docker-compose run orchestrator python orchestrator.py --dry-run
+    #   docker-compose run orchestrator python orchestrator.py --phase 1
+    #   docker-compose run orchestrator python orchestrator.py
+    command: ["python", "orchestrator.py", "--help"]
+
+    # Health check
+    healthcheck:
+      test: ["CMD", "python", "-c", "import sys; sys.exit(0)"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+# Named volumes for better management (alternative to bind mounts)
+volumes:
+  agent_state:
+    driver: local
+  agent_logs:
+    driver: local
+  agent_checkpoints:
+    driver: local
+  agent_cache:
+    driver: local

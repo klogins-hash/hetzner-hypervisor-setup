@@ -160,6 +160,26 @@ agents/
 
 ## Quick Start
 
+### Option 1: Docker (Recommended for Production)
+
+```bash
+# Navigate to agents directory
+cd /Users/franksimpson/CascadeProjects/hetzner-hypervisor-setup/agents
+
+# Configure environment
+cp .env.template .env
+# Edit .env with your API keys
+
+# Build and run
+docker-compose build
+docker-compose run --rm orchestrator python orchestrator.py --dry-run
+docker-compose run --rm orchestrator python orchestrator.py
+
+# See DOCKER.md for full documentation
+```
+
+### Option 2: Native Python
+
 ```bash
 # Navigate to project
 cd /Users/franksimpson/CascadeProjects/hetzner-hypervisor-setup
@@ -312,11 +332,43 @@ When adding new agents or modifying workflows:
 4. Document rollback procedures
 5. Test in isolation before integration
 
+## Deployment Options
+
+### 🐳 Docker Deployment
+**Recommended for:** Production, CI/CD, Team collaboration
+
+**Benefits:**
+- Isolated environment
+- Reproducible builds
+- Easy deployment
+- Resource limits
+- Version control
+
+**Quick Start:**
+```bash
+docker-compose build
+docker-compose run --rm orchestrator python orchestrator.py --dry-run
+```
+
+See **[DOCKER.md](DOCKER.md)** for complete Docker deployment guide.
+
+### 🐍 Native Python
+**Recommended for:** Local development, Quick testing, Custom integration
+
+**Quick Start:**
+```bash
+pip install -r requirements.txt
+python orchestrator.py --dry-run
+```
+
+See **[GETTING_STARTED.md](GETTING_STARTED.md)** for native setup guide.
+
 ## Support
 
 For issues or questions:
 - Check the main project README
 - Review AGENT_TEAMS_PLAN.md for team coordination
+- Read DOCKER.md for containerized deployment
 - Consult Strands documentation: https://strandsagents.com
 - Create GitHub issue with logs
 
