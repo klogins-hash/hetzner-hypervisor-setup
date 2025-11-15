@@ -1,0 +1,44 @@
+# Strands Agent Framework Core
+strands-agents>=0.1.0
+strands-agents-tools>=0.1.0
+
+# Model Providers (install based on your choice)
+# OpenAI
+openai>=1.0.0
+
+# Anthropic
+anthropic>=0.18.0
+
+# AWS Bedrock
+boto3>=1.34.0
+
+# Ollama (if using local models)
+# ollama>=0.1.0
+
+# Utility Libraries
+pyyaml>=6.0.1
+python-dotenv>=1.0.0
+paramiko>=3.4.0  # SSH connections
+rich>=13.7.0  # Beautiful console output
+pydantic>=2.5.0  # Data validation
+
+# Async & Concurrency
+asyncio-run>=0.1.0
+concurrent-futures>=3.1.1
+
+# Logging & Monitoring
+structlog>=24.1.0
+python-json-logger>=2.0.7
+
+# Optional: Performance monitoring
+# psutil>=5.9.0
+
+# Optional: Notifications
+# slack-sdk>=3.23.0
+# discord-webhook>=1.3.0
+
+# Development & Testing (optional)
+# pytest>=7.4.0
+# pytest-asyncio>=0.21.0
+# black>=24.0.0
+# mypy>=1.8.0

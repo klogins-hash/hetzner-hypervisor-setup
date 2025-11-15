@@ -1,0 +1,215 @@
+# Strands Agent Framework Configuration
+
+# Project Settings
+project:
+  name: "hetzner-hypervisor-setup"
+  version: "1.0.0"
+  base_path: "/Users/franksimpson/CascadeProjects/hetzner-hypervisor-setup"
+
+# SSH Configuration
+ssh:
+  host: "hetzner1"
+  user: "root"
+  remote_project_path: "/root/hetzner-hypervisor-setup"
+  connection_timeout: 30
+  command_timeout: 3600  # 1 hour for long-running commands
+  retry_attempts: 3
+  retry_delay: 5
+
+# LLM Model Configuration
+# Supports: openai, anthropic, bedrock, ollama, etc.
+models:
+  default_provider: "anthropic"  # Change to your preferred provider
+
+  # OpenAI Configuration
+  openai:
+    model: "gpt-4o"
+    api_key_env: "OPENAI_API_KEY"
+    temperature: 0.1
+    max_tokens: 4000
+
+  # Anthropic Configuration
+  anthropic:
+    model: "claude-3-5-sonnet-20241022"
+    api_key_env: "ANTHROPIC_API_KEY"
+    temperature: 0.1
+    max_tokens: 4000
+
+  # Ollama (Local) Configuration
+  ollama:
+    model: "llama3.1:70b"
+    base_url: "http://localhost:11434"
+    temperature: 0.1
+
+  # AWS Bedrock Configuration
+  bedrock:
+    model: "anthropic.claude-3-5-sonnet-20241022-v2:0"
+    region: "us-east-1"
+    temperature: 0.1
+
+# Agent Team Configuration
+teams:
+  alpha:
+    name: "Security Agent"
+    phase: 1
+    dependencies: []
+    parallel_with: []
+    step_file: "docs/steps/step-01-security-baseline.md"
+    duration_estimate: 3  # hours
+
+  bravo:
+    name: "Container Agent"
+    phase: 2
+    dependencies: ["alpha"]
+    parallel_with: ["charlie"]
+    step_file: "docs/steps/step-02-container-runtime.md"
+    duration_estimate: 3
+
+  charlie:
+    name: "Monitoring Agent"
+    phase: 2
+    dependencies: ["alpha"]
+    parallel_with: ["bravo"]
+    step_file: "docs/steps/step-03-basic-monitoring.md"
+    duration_estimate: 2.5
+
+  delta:
+    name: "Kubernetes Agent"
+    phase: 3
+    dependencies: ["bravo", "charlie"]
+    parallel_with: []
+    step_file: "docs/steps/step-04-kubernetes-setup.md"
+    duration_estimate: 5
+
+  echo_network:
+    name: "Network Agent"
+    phase: 4
+    dependencies: ["delta"]
+    parallel_with: ["echo_storage"]
+    step_file: "docs/steps/step-05-network-configuration.md"
+    duration_estimate: 3.5
+
+  echo_storage:
+    name: "Storage Agent"
+    phase: 4
+    dependencies: ["delta"]
+    parallel_with: ["echo_network"]
+    step_file: "docs/steps/step-06-storage-persistence.md"
+    duration_estimate: 3.5
+
+  foxtrot:
+    name: "HA Agent"
+    phase: 5
+    dependencies: ["echo_network", "echo_storage"]
+    parallel_with: ["golf_backup", "golf_performance"]
+    step_file: "docs/steps/step-07-high-availability.md"
+    duration_estimate: 5
+
+  golf_backup:
+    name: "Backup Agent"
+    phase: 5
+    dependencies: ["echo_network", "echo_storage"]
+    parallel_with: ["foxtrot", "golf_performance"]
+    step_file: "docs/steps/step-08-backup-recovery.md"
+    duration_estimate: 3.5
+
+  golf_performance:
+    name: "Performance Agent"
+    phase: 5
+    dependencies: ["echo_network", "echo_storage"]
+    parallel_with: ["foxtrot", "golf_backup"]
+    step_file: "docs/steps/step-09-performance-tuning.md"
+    duration_estimate: 4
+
+  charlie_advanced:
+    name: "Advanced Monitoring Agent"
+    phase: 6
+    dependencies: ["foxtrot", "golf_backup", "golf_performance"]
+    parallel_with: ["golf_multitenancy", "golf_devex"]
+    step_file: "docs/steps/step-10-monitoring-alerting.md"
+    duration_estimate: 4.5
+
+  golf_multitenancy:
+    name: "Multi-Tenancy Agent"
+    phase: 6
+    dependencies: ["foxtrot", "golf_backup", "golf_performance"]
+    parallel_with: ["charlie_advanced", "golf_devex"]
+    step_file: "docs/steps/step-11-multi-tenancy.md"
+    duration_estimate: 5
+
+  golf_devex:
+    name: "DevEx Agent"
+    phase: 6
+    dependencies: ["foxtrot", "golf_backup", "golf_performance"]
+    parallel_with: ["charlie_advanced", "golf_multitenancy"]
+    step_file: "docs/steps/step-12-developer-experience.md"
+    duration_estimate: 5
+
+# Workflow Configuration
+workflow:
+  max_parallel_teams: 3  # Maximum teams running in parallel
+  enable_parallel_execution: true
+  checkpoint_after_phase: true
+  auto_verify: true  # Run verification after each team completes
+
+# Execution Settings
+execution:
+  dry_run: false  # Set to true to simulate without executing
+  interactive_mode: false  # Prompt for confirmation before each phase
+  auto_retry_on_failure: true
+  retry_max_attempts: 3
+  retry_delay_seconds: 60
+  save_checkpoints: true
+  checkpoint_dir: "checkpoints"
+
+# Logging Configuration
+logging:
+  level: "INFO"  # DEBUG, INFO, WARNING, ERROR
+  file: "logs/orchestrator.log"
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  console_output: true
+  rich_formatting: true  # Use rich library for beautiful console output
+
+# Monitoring & Observability
+monitoring:
+  enable_metrics: true
+  metrics_file: "logs/metrics.json"
+  track_duration: true
+  track_resource_usage: false  # Requires psutil
+
+# Error Handling
+error_handling:
+  continue_on_error: false  # Stop on first error
+  rollback_on_failure: true
+  nuclear_reset_enabled: true  # Allow full server rebuild
+
+# Verification Settings
+verification:
+  run_after_each_team: true
+  strict_mode: true  # Fail if verification doesn't pass
+  timeout_seconds: 300
+
+# State Management
+state:
+  persistence: true
+  state_file: "state/workflow_state.json"
+  backup_state: true
+  restore_on_startup: true
+
+# Notification Settings (Optional)
+notifications:
+  enabled: false
+  slack_webhook_url: ""  # Set if using Slack notifications
+  discord_webhook_url: ""  # Set if using Discord notifications
+  email_enabled: false
+  email_smtp_server: ""
+  email_recipients: []
+
+# Advanced Settings
+advanced:
+  enable_caching: true
+  cache_dir: "cache"
+  enable_profiling: false
+  profiling_output: "logs/profile.json"
+  debug_ssh_commands: false  # Print all SSH commands
+  keep_ssh_connections_alive: true
